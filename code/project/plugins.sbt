@@ -15,3 +15,11 @@ addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "2.2.0")
 // +-------------------------------------------------------------------------------------+
 
 addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.7.4")
+
+
+// +--------------------------------------------------------------------------------------+
+// | XSBT Web plugin (https://github.com/JamesEarlDouglas/xsbt-web-plugin)                |
+// | Implements SBT 0.12.x Web project actions: "jetty-run" -> "container:start", etc ... |
+// +--------------------------------------------------------------------------------------+
+
+libraryDependencies += "com.github.siasia" %% "xsbt-web-plugin" % "0.12.0-0.2.11.1"

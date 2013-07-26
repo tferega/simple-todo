@@ -15,6 +15,10 @@ do
       echo "Setting debug mode"
       LOG_LEVEL="\"set logLevel:=Level.Debug\""
       ;;
+    "~lift")
+      echo "Firing up Jetty ..."
+      SBT_PARAMS="$SBT_PARAMS container:start ~compile container:stop"
+      ;;
     "--loop")
       echo "Will run SBT in loop mode"
       DO_LOOP=true
