@@ -5,13 +5,12 @@ import db.{ IsDuplicate, UserRepo }
 
 import java.io.IOException
 
-import net.liftweb.common.{ Box, Empty, Full }
 import net.liftweb.http.{ S, SessionVar }
 
 import scala.concurrent.Await
 
 object User {
-  private object currentUser extends SessionVar[Box[String]](Empty)
+  private object currentUser extends SessionVar[Option[String]](None)
 
   def create(username: String, password: String): Either[String, Unit] = {
     try {
@@ -48,8 +47,10 @@ object User {
 
   def isLoggedIn = currentUser.isDefined
 
+  def name = currentUser.get
+
   private def logInUser(user: String) {
     currentUser.remove
-    currentUser(Full(user))
+    currentUser(Some(user))
   }
 }

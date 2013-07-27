@@ -15,8 +15,15 @@ object TaskList {
       Task("second", "zxcv", 2))
 
   def render =
+    renderTaskList &
+    renderWelcome
+
+  private def renderTaskList =
     "#tasklist *" #> taskList.map(task =>
       "#name *"        #> task.name &
       "#description *" #> task.description &
       "#priority *"    #> task.priority)
+
+  private def renderWelcome =
+    "#username" #> User.name.getOrElse("")
 }
