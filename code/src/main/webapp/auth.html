@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="hr-HR">
+  <head>
+    <title>Simple TODO</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+  </head>
+  <body>
+    <h1>Simple TODO</h1>
+
+    <div>
+      <h2>Login</h2>
+      <form data-lift="form.ajax">
+        <div data-lift="LoginForm">
+          <div id="login-result" style="display: none"></div>
+          Username: <input id="login-name"><br>
+          Password: <input id="login-pass"><br>
+          <input id="login-submit">
+        </div>
+      </form>
+
+      <h2>Register</h2>
+      <form data-lift="form.ajax">
+        <div data-lift="RegisterForm">
+          <div id="register-result" style="display: none"></div>
+          Username: <input id="register-name"><br>
+          Password: <input id="register-pass"><br>
+          <input id="register-submit">
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
