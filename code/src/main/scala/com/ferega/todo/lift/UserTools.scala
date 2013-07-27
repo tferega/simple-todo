@@ -9,7 +9,7 @@ import net.liftweb.http.{ S, SessionVar }
 
 import scala.concurrent.Await
 
-object User {
+object UserTools {
   private object currentUser extends SessionVar[Option[String]](None)
 
   def create(username: String, password: String): Either[String, Unit] = {

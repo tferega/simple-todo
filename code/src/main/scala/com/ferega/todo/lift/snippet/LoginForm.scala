@@ -15,7 +15,7 @@ object LoginForm {
   var password = ""
 
   def process(): JsCmd =
-    User.logIn(username, password) match {
+    UserTools.logIn(username, password) match {
       case Right(_)      => RedirectTo("/")
       case Left(message) => SetHtml("login-result", Text(message)) & Show("login-result")
     }

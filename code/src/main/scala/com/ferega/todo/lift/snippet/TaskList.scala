@@ -25,5 +25,5 @@ object TaskList {
       "#priority *"    #> task.priority)
 
   private def renderWelcome =
-    "#username" #> User.name.getOrElse("")
+    "#username" #> UserTools.name.getOrElse("")
 }

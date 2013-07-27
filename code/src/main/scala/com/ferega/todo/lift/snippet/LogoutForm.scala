@@ -11,7 +11,7 @@ import xml.Text
 
 object LogoutForm {
   def process(): JsCmd = {
-    User.logOut
+    UserTools.logOut
     RedirectTo("/auth")
   }
 

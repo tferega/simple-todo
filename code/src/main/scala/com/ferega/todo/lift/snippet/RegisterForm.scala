@@ -15,7 +15,7 @@ object RegisterForm {
   var password = ""
 
   def process(): JsCmd =
-    User.create(username, password) match {
+    UserTools.create(username, password) match {
       case Right(_)      => RedirectTo("/")
       case Left(message) => SetHtml("register-result", Text(message)) & Show("register-result")
     }
