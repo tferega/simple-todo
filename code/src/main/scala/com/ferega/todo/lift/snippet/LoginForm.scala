@@ -16,8 +16,8 @@ object LoginForm {
 
   def process(): JsCmd =
     UserTools.auth(username, password) match {
-      case Right(userData) =>
-        Session.create(userData)
+      case Right(user) =>
+        Session.create(user)
         RedirectTo("/")
       case Left(message) =>
         SetHtml("login-result", Text(message)) & Show("login-result")

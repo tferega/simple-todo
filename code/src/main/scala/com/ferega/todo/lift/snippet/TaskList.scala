@@ -2,7 +2,7 @@ package com.ferega.todo
 package lift
 package snippet
 
-import db.TaskData
+import model.Task
 
 import net.liftweb.util.Helpers._
 
@@ -21,15 +21,15 @@ object TaskList {
   private def renderEmptyTable =
     "#task-table" #> "You don't seem to have any tasks."
 
-  private def renderTaskList(taskList: IndexedSeq[TaskData]) =
+  private def renderTaskList(taskList: IndexedSeq[Task]) =
     "#task-list *" #> taskList.map(task =>
-      "#name *"        #> task.name &
-      "#description *" #> task.description &
-      "#priority *"    #> task.priority)
+      "#name *"        #> task.getName &
+      "#description *" #> task.getDescription &
+      "#priority *"    #> task.getPriority)
 
   private def renderTaskError(message: String) =
     "#task-table" #> message
 
   private def renderWelcome =
-    "#username" #> Session.get.username
+    "#username" #> Session.get.getUsername
 }

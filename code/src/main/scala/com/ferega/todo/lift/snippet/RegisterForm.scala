@@ -16,8 +16,8 @@ object RegisterForm {
 
   def process(): JsCmd =
     UserTools.create(username, password) match {
-      case Right(userData) =>
-        Session.create(userData)
+      case Right(user) =>
+        Session.create(user)
         RedirectTo("/")
       case Left(message) =>
         SetHtml("register-result", Text(message)) & Show("register-result")

@@ -1,16 +1,16 @@
 package com.ferega.todo
 package lift
 
-import db.UserData
+import model.User
 
 import net.liftweb.http.{ S, SessionVar }
 
 object Session {
-  private object current extends SessionVar[Option[UserData]](None)
+  private object current extends SessionVar[Option[User]](None)
 
-  def create(userData: UserData) {
+  def create(user: User) {
     current.remove
-    current(Some(userData))
+    current(Some(user))
   }
 
   def destroy() = {

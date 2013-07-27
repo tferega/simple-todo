@@ -1,12 +1,13 @@
 package com.ferega.todo
 package lift
 
-import db.{ IsDuplicate, UserData, UserRepo }
+import db.{ IsDuplicate, UserRepo }
+import model.User
 
 import net.liftweb.http.{ S, SessionVar }
 
 object UserTools {
-  def create(username: String, password: String): Either[String, UserData] = {
+  def create(username: String, password: String): Either[String, User] = {
     try {
       Right(UserRepo.create(username, password))
     } catch {
@@ -17,10 +18,10 @@ object UserTools {
     }
   }
 
-  def auth(username: String, password: String): Either[String, UserData] = {
+  def auth(username: String, password: String): Either[String, User] = {
     try {
       UserRepo.auth(username, password) match {
-        case Some(userData) => Right(userData)
+        case Some(user) => Right(user)
         case None => Left("Invalid username or password!")
       }
     } catch {

@@ -1,19 +1,16 @@
 package com.ferega.todo
 package db
 
+import model.Task
+
 import scala.collection.JavaConversions._
 
 object TaskRepo {
   val repo = new model.repositories.TaskRepository(locator)
 
-  private def toTaskData(task: model.Task) =
-    TaskData(task.getName, task.getDescription, task.getPriority)
-
-  def getByUsername(username: String): IndexedSeq[TaskData] = {
+  def getByUsername(username: String): IndexedSeq[Task] = {
     val spec = new model.Task.findByUser(username)
-    val taskList = spec.search.toIndexedSeq map toTaskData
-    taskList.sortBy(_.priority)
+    val taskList = spec.search.toIndexedSeq
+    taskList.sortBy(_.getPriority)
   }
 }
-
-case class TaskData(name: String, description: String, priority: Int)
