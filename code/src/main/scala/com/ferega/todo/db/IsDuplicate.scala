@@ -3,7 +3,7 @@ package db
 
 import java.io.IOException
 
-object NotFound {
+object IsDuplicate {
   def unapply(e: IOException): Boolean =
-    e.getMessage().contains("Can't find")
+    e.getMessage().contains("duplicate key value violates unique constraint")
 }

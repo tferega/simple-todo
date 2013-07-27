@@ -212,4 +212,77 @@ public class User implements java.io.Serializable, AggregateRoot {
 
         return this;
     }
+
+public static class auth implements java.io.Serializable, Specification<User> {
+    public auth(
+             final String username,
+             final String passhash) {
+        setUsername(username);
+        setPasshash(passhash);
+    }
+
+    public auth() {
+        this.username = "";
+        this.passhash = "";
+    }
+
+    private static final long serialVersionUID = 0x0097000a;
+
+    private String username;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public auth setUsername(final String value) {
+        if(value == null) throw new IllegalArgumentException("Property \"username\" cannot be null!");
+        this.username = value;
+
+        return this;
+    }
+
+    private String passhash;
+
+    public String getPasshash() {
+        return passhash;
+    }
+
+    public auth setPasshash(final String value) {
+        if(value == null) throw new IllegalArgumentException("Property \"passhash\" cannot be null!");
+        this.passhash = value;
+
+        return this;
+    }
+
+        public java.util.List<User> search() throws java.io.IOException {
+            return search(null, null, Bootstrap.getLocator());
+        }
+        public java.util.List<User> search(final ServiceLocator locator) throws java.io.IOException {
+            return search(null, null, locator);
+        }
+        public java.util.List<User> search(final Integer limit, final Integer offset) throws java.io.IOException {
+            return search(limit, offset, Bootstrap.getLocator());
+        }
+        public java.util.List<User> search(final Integer limit, final Integer offset, final ServiceLocator locator) throws java.io.IOException {
+            try {
+                return (locator != null ? locator : Bootstrap.getLocator()).resolve(DomainProxy.class).search(this, limit, offset, null).get();
+            } catch (final InterruptedException e) {
+                throw new java.io.IOException(e);
+            } catch (final java.util.concurrent.ExecutionException e) {
+                throw new java.io.IOException(e);
+            }
+        }
+        public long count() throws java.io.IOException {
+            return count(Bootstrap.getLocator());
+        }
+        public long count(final ServiceLocator locator) throws java.io.IOException {
+            try {
+                return (locator != null ? locator : Bootstrap.getLocator()).resolve(DomainProxy.class).count(this).get().longValue();
+            } catch (final InterruptedException e) {
+                throw new java.io.IOException(e);
+            } catch (final java.util.concurrent.ExecutionException e) {
+                throw new java.io.IOException(e);
+            }
+        }
+}
 }

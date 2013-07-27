@@ -1,7 +1,7 @@
 package com.ferega.todo
 package lift
 
-import db.{ NotFound, UserRepo }
+import db.{ IsDuplicate, UserRepo }
 
 import java.io.IOException
 
@@ -13,18 +13,31 @@ import scala.concurrent.Await
 object User {
   private object currentUser extends SessionVar[Box[String]](Empty)
 
-  def logIn(username: String, password: String): Either[String, Unit] = {
-    val userFut = UserRepo.find(username)
+  def create(username: String, password: String): Either[String, Unit] = {
     try {
-      val user = Await.result(userFut, dbTimeout)
-      logInUser(user)
+      UserRepo.create(username, password)
+      logInUser(username)
       Right(Unit)
     } catch {
-      case NotFound() =>
-        Left("Invalid username or password")
+      case IsDuplicate() =>
+        Left("Username already exists! Please choose another.")
       case e: Exception =>
-        e.printStackTrace()
-        Left("Something went wrong. Please try again")
+        Left("Something went wrong! Please try again.")
+    }
+  }
+
+  def logIn(username: String, password: String): Either[String, Unit] = {
+    try {
+      val isFound = UserRepo.find(username, password)
+      if (isFound) {
+        logInUser(username)
+        Right(Unit)
+      } else {
+        Left("Invalid username or password!")
+      }
+    } catch {
+      case e: Exception =>
+        Left("Something went wrong! Please try again.")
     }
   }
 
@@ -33,12 +46,10 @@ object User {
     S.session.foreach(_.destroySession)
   }
 
-  def create(username: String, password: String): Either[String, Unit] = Left("Not implemented")
-
   def isLoggedIn = currentUser.isDefined
 
-  private def logInUser(user: model.User) {
+  private def logInUser(user: String) {
     currentUser.remove
-    currentUser(Full(user.getUsername()))
+    currentUser(Full(user))
   }
 }

@@ -6,7 +6,13 @@ import scala.concurrent.Future
 object UserRepo {
   val repo = new model.repositories.UserRepository(locator)
 
-  def find(username: String) = wrapJavaFuture {
-    repo.find(username)
+  def create(username: String, passhash: String) {
+    val user = new model.User(username, passhash)
+    user.persist()
+  }
+
+  def find(username: String, passhash: String): Boolean = {
+    val spec = new model.User.auth(username, passhash)
+    spec.search.size == 1
   }
 }
