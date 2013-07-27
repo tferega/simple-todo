@@ -2,28 +2,34 @@ package com.ferega.todo
 package lift
 package snippet
 
-import net.liftweb.http.SHtml.{ajaxText,ajaxSubmit}
+import db.TaskData
+
 import net.liftweb.util.Helpers._
-import xml.Text
-import net.liftweb.http.js.JsCmd
-import net.liftweb.http.js.JsCmds.SetHtml
 
 object TaskList {
-  case class Task(name: String, description: String, priority: Int)
-  val taskList = IndexedSeq(
-      Task("first", "asdf", 1),
-      Task("second", "zxcv", 2))
-
   def render =
-    renderTaskList &
+    tryRenderTaskTable &
     renderWelcome
 
-  private def renderTaskList =
-    "#tasklist *" #> taskList.map(task =>
+  private def tryRenderTaskTable =
+    TaskTools.getForCurrentUser match {
+      case Right(taskList) if taskList.isEmpty => renderEmptyTable
+      case Right(taskList) => renderTaskList(taskList)
+      case Left(message)   => renderTaskError(message)
+    }
+
+  private def renderEmptyTable =
+    "#task-table" #> "You don't seem to have any tasks."
+
+  private def renderTaskList(taskList: IndexedSeq[TaskData]) =
+    "#task-list *" #> taskList.map(task =>
       "#name *"        #> task.name &
       "#description *" #> task.description &
       "#priority *"    #> task.priority)
 
+  private def renderTaskError(message: String) =
+    "#task-table" #> message
+
   private def renderWelcome =
-    "#username" #> UserTools.name.getOrElse("")
+    "#username" #> UserTools.name
 }

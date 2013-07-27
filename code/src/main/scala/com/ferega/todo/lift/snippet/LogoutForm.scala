@@ -7,8 +7,6 @@ import net.liftweb.http.js.JsCmds.RedirectTo
 import net.liftweb.http.SHtml
 import net.liftweb.util.Helpers._
 
-import xml.Text
-
 object LogoutForm {
   def process(): JsCmd = {
     UserTools.logOut

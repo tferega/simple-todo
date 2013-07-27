@@ -3,11 +3,7 @@ package lift
 
 import db.{ IsDuplicate, UserRepo }
 
-import java.io.IOException
-
 import net.liftweb.http.{ S, SessionVar }
-
-import scala.concurrent.Await
 
 object UserTools {
   private object currentUser extends SessionVar[Option[String]](None)
@@ -48,7 +44,7 @@ object UserTools {
   def isLoggedIn  = currentUser.isDefined
   def notLoggedIn = !isLoggedIn
 
-  def name = currentUser.get
+  def name = currentUser.get.getOrElse("")
 
   private def logInUser(user: String) {
     currentUser.remove
