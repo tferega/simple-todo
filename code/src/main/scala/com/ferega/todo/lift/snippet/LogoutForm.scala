@@ -9,7 +9,7 @@ import net.liftweb.util.Helpers._
 
 object LogoutForm {
   def process(): JsCmd = {
-    UserTools.logOut
+    Session.destroy
     RedirectTo("/auth")
   }
 

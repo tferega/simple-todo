@@ -16,8 +16,8 @@ class Boot extends Bootable {
       }
     }
 
-  def isLoggedIn  = redirectIfFalse(UserTools.isLoggedIn,  "/auth")
-  def notLoggedIn = redirectIfFalse(UserTools.notLoggedIn, "/")
+  def isLoggedIn  = redirectIfFalse(Session.isDefined, "/auth")
+  def notLoggedIn = redirectIfFalse(Session.isEmpty, "/")
 
   def boot() {
     LiftRules.addToPackages("com.ferega.todo.lift")

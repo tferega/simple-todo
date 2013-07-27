@@ -1,16 +1,26 @@
 package com.ferega.todo
 package db
 
+import scala.collection.JavaConversions._
+
 object UserRepo {
   val repo = new model.repositories.UserRepository(locator)
 
-  def create(username: String, passhash: String) {
+  private def toUserData(user: model.User) =
+    UserData(user.getUsername, user.getPasshash)
+
+  def create(username: String, passhash: String): UserData = {
     val user = new model.User(username, passhash)
-    user.persist()
+    toUserData(user.persist())
   }
 
-  def find(username: String, passhash: String): Boolean = {
+  def auth(username: String, passhash: String): Option[UserData] = {
     val spec = new model.User.auth(username, passhash)
-    spec.search.size == 1
+    spec.search.toList match {
+      case user :: Nil => Some(toUserData(user))
+      case _ => None
+    }
   }
 }
+
+case class UserData(username: String, passhash: String)

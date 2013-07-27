@@ -15,9 +15,12 @@ object LoginForm {
   var password = ""
 
   def process(): JsCmd =
-    UserTools.logIn(username, password) match {
-      case Right(_)      => RedirectTo("/")
-      case Left(message) => SetHtml("login-result", Text(message)) & Show("login-result")
+    UserTools.auth(username, password) match {
+      case Right(userData) =>
+        Session.create(userData)
+        RedirectTo("/")
+      case Left(message) =>
+        SetHtml("login-result", Text(message)) & Show("login-result")
     }
 
   def render =

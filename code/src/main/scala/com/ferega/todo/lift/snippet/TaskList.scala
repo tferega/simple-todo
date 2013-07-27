@@ -31,5 +31,5 @@ object TaskList {
     "#task-table" #> message
 
   private def renderWelcome =
-    "#username" #> UserTools.name
+    "#username" #> Session.get.username
 }
