@@ -8,22 +8,23 @@ import net.liftweb.sitemap.Loc.{ EarlyResponse, Hidden }
 import net.liftweb.sitemap.{ Menu, SiteMap }
 
 class Boot extends Bootable {
-  def loggedIn =
+  def redirectIfFalse(predicate: => Boolean, destination: String) =
     () => {
-      User.isLoggedIn match {
-        case true => Empty
-        case false => {
-          Full(S.redirectTo("/auth"))
-        }
+      predicate match {
+        case true  => Empty
+        case false => Full(S.redirectTo(destination))
       }
     }
+
+  def isLoggedIn  = redirectIfFalse(User.isLoggedIn,  "/auth")
+  def notLoggedIn = redirectIfFalse(User.notLoggedIn, "/")
 
   def boot() {
     LiftRules.addToPackages("com.ferega.todo.lift")
     LiftRules.setSiteMap(SiteMap(
-        Menu("Home") / "index" >> Hidden >> EarlyResponse(loggedIn),
-        Menu("Auth") / "auth" >> Hidden)
-    )
+        Menu("Home") / "index" >> Hidden >> EarlyResponse(isLoggedIn),
+        Menu("Auth") / "auth"  >> Hidden >> EarlyResponse(notLoggedIn)
+    ))
 
     LiftRules.htmlProperties.default.set((r: Req) =>
       new Html5Properties(r.userAgent))

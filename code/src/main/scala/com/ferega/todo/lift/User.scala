@@ -45,7 +45,8 @@ object User {
     S.session.foreach(_.destroySession)
   }
 
-  def isLoggedIn = currentUser.isDefined
+  def isLoggedIn  = currentUser.isDefined
+  def notLoggedIn = !isLoggedIn
 
   def name = currentUser.get
 
