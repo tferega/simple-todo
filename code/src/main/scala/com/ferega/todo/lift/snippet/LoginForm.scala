@@ -2,9 +2,8 @@ package com.ferega.todo
 package lift
 package snippet
 
-import net.liftweb.http.js.jquery.JqJsCmds.Show
-import net.liftweb.http.js.JsCmd
-import net.liftweb.http.js.JsCmds.{ RedirectTo, SetHtml }
+import net.liftweb.http.js.jquery.JqJsCmds
+import net.liftweb.http.js.{ JsCmd, JsCmds }
 import net.liftweb.http.SHtml
 import net.liftweb.util.Helpers._
 
@@ -18,9 +17,9 @@ object LoginForm {
     UserTools.auth(username, password) match {
       case Right(user) =>
         Session.create(user)
-        RedirectTo("/")
+        JsCmds.RedirectTo("/")
       case Left(message) =>
-        SetHtml("login-result", Text(message)) & Show("login-result")
+        JsCmds.SetHtml("login-result", Text(message)) & JqJsCmds.Show("login-result")
     }
 
   def render =
