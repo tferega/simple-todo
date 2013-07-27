@@ -4,8 +4,6 @@ package lift
 import db.{ IsDuplicate, UserRepo }
 import model.User
 
-import net.liftweb.http.{ S, SessionVar }
-
 object UserTools {
   def create(username: String, password: String): Either[String, User] = {
     try {

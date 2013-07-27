@@ -19,7 +19,7 @@
             <th>Priority</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="task-body">
           <tr id="task-list">
             <td id="name"></td>
             <td id="description"></td>
@@ -28,6 +28,16 @@
         </tbody>
       </table>
     </div>
+
+    <h2>Add an new task</h2>
+    <form data-lift="form.ajax">
+      <div data-lift="AddTaskForm">
+        <div id="add-result" style="display: none"></div>
+        Name: <input id="name"><br>
+        Description: <input id="description">
+        <input id="submit">
+      </div>
+    </form>
 
     <form data-lift="LogoutForm">
       <input id="logout"></span>
