@@ -6,7 +6,7 @@ import db.{ NotFound, UserRepo }
 import java.io.IOException
 
 import net.liftweb.common.{ Box, Empty, Full }
-import net.liftweb.http.SessionVar
+import net.liftweb.http.{ S, SessionVar }
 
 import scala.concurrent.Await
 
@@ -26,6 +26,11 @@ object User {
         e.printStackTrace()
         Left("Something went wrong. Please try again")
     }
+  }
+
+  def logOut() = {
+    currentUser.remove
+    S.session.foreach(_.destroySession)
   }
 
   def create(username: String, password: String): Either[String, Unit] = Left("Not implemented")
