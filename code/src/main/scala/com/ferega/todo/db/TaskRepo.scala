@@ -33,6 +33,9 @@ object TaskRepo {
         case NotFound() => None
       }
 
+  def update(mutatedTask: Task): Future[Task] =
+    updateWrap(mutatedTask)
+
   def delete(task: Task): Future[Task] =
     deleteWrap(task)
 
@@ -42,6 +45,9 @@ object TaskRepo {
 
   private def insertWrap(task: Task): Future[String] =
     wrapJavaFuture { repo.insert(task) }
+
+  private def updateWrap(mutatedTask: Task): Future[Task] =
+      wrapJavaFuture { repo.update(mutatedTask) }
 
   private def deleteWrap(task: Task): Future[Task] =
     wrapJavaFuture { repo.delete(task).asInstanceOf[JFuture[Task]] }

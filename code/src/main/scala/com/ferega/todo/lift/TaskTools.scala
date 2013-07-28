@@ -9,10 +9,9 @@ import scala.concurrent.Await
 object TaskTools {
   def currentUser = Session.opt orElse Request.opt getOrElse(throw new Exception("Neither session nor request are defined"))
 
-  def create(name: String, description: String): Either[String, Task] = {
+  def create(name: String, description: String, priority: Option[Int] = None): Either[String, Task] = {
     try {
-      val user = Session.get
-      val newTaskFut = TaskRepo.create(user, name, description, None)
+      val newTaskFut = TaskRepo.create(currentUser, name, description, priority)
       val newTask = Await.result(newTaskFut, reasonableTimeout)
       Right(newTask)
     } catch {
@@ -37,6 +36,21 @@ object TaskTools {
       val taskOptFut = TaskRepo.find(id)
       val taskOpt = Await.result(taskOptFut, reasonableTimeout)
       Right(taskOpt.filter(_.getUserID == currentUser.getUsername))
+    } catch {
+      case e: Exception =>
+        Left("Something went wrong! Please try again.")
+    }
+  }
+
+  def updateForCurrentUser(mutatedTask: Task): Either[String, Task] = {
+    try {
+      if (mutatedTask.getUserID == currentUser.getUsername) {
+        val updatedTaskFut = TaskRepo.update(mutatedTask)
+        val updatedTask = Await.result(updatedTaskFut, reasonableTimeout)
+        Right(updatedTask)
+      } else {
+        Left("Something went wrong! Please try again.")
+      }
     } catch {
       case e: Exception =>
         Left("Something went wrong! Please try again.")
