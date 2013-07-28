@@ -49,7 +49,7 @@ object Rest extends RestHelper {
           val task = new Task
           paramList.foreach(_.mutateTask(task))
           TaskTools.create(task) match {
-            case Right(createdTask) => CreatedResponse(RespType.taskToXml(createdTask), "mime?")
+            case Right(createdTask) => CreatedResponse(RespType.taskToXml(createdTask), "application/xml")
             case Left(message)      => InternalServerErrorResponse()
           }
         case Left(message) => InternalServerErrorResponse()
