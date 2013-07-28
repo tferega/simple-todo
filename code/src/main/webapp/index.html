@@ -11,19 +11,24 @@
       <div>Welcome, <span id="username"></span>!</div>
 
       <h2>Tasks</h2>
+      <div id="action-result" style="display: none"></div>
       <table id="task-table" border="1">
         <thead>
           <tr>
-            <th>Task</th>
+            <th>Name</th>
             <th>Description</th>
             <th>Priority</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody id="task-body">
           <tr id="task-list">
-            <td id="name"></td>
-            <td id="description"></td>
-            <td id="priority"></td>
+            <td class="name"></td>
+            <td class="description"></td>
+            <td class="priority"></td>
+            <td>
+              <div class="delete">DELETE</div>
+            </td>
           </tr>
         </tbody>
       </table>

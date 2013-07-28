@@ -18,4 +18,8 @@ object TaskRepo {
     val taskList = spec.search.toIndexedSeq
     taskList.sortBy(_.getPriority)
   }
+
+  def delete(task: Task) {
+    task.delete()
+  }
 }

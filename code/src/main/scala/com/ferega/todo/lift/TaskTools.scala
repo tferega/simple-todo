@@ -22,4 +22,13 @@ object TaskTools {
         Left("Something went wrong! Please try again.")
     }
   }
+
+  def delete(task: Task): Either[String, Unit] = {
+    try {
+      Right(TaskRepo.delete(task))
+    } catch {
+      case e: Exception =>
+        Left("Something went wrong! Please try again.")
+    }
+  }
 }
