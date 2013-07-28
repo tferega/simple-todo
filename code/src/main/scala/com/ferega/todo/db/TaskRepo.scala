@@ -13,7 +13,11 @@ object TaskRepo {
   val repo = new TaskRepository(locator)
 
   def create(user: User, name: String, description: String, priority: Option[Int]): Future[Task] = {
-    val task = new Task(user, name, description, priority.map(e => e: Integer).orNull)
+    val newTask = new Task(user, name, description, priority.map(e => e: Integer).orNull)
+    create(newTask)
+  }
+
+  def create(task: Task): Future[Task] = {
     val uriFut = insertWrap(task)
     uriFut flatMap findWrap
   }

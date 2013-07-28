@@ -43,6 +43,18 @@ object Rest extends RestHelper {
         case Left(message)     => InternalServerErrorResponse()
       }
 
+    case req @ Req("rest" :: "task" :: Nil, "", PostRequest) =>
+      ParamParser.parse(req.params) match {
+        case Right(paramList) =>
+          val task = new Task
+          paramList.foreach(_.mutateTask(task))
+          TaskTools.create(task) match {
+            case Right(createdTask) => CreatedResponse(RespType.taskToXml(createdTask), "mime?")
+            case Left(message)      => InternalServerErrorResponse()
+          }
+        case Left(message) => InternalServerErrorResponse()
+      }
+
     case req @ Req("rest" :: "task" :: id :: Nil, "", PutRequest) =>
       (ParamParser.parse(req.params), TaskTools.getForCurrentUser(id)) match {
         case (Right(paramList), Right(Some(task))) =>

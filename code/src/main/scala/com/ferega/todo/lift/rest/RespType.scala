@@ -49,19 +49,19 @@ object RespType {
       case _      => None
     }
 
-  private def taskToText(task: Task): String =
+  def taskToText(task: Task): String =
     s"ID: ${ task.getID }\n" +
     s"NAME: ${ task.getName }\n" +
     s"DESCRIPTION: ${ task.getDescription }\n" +
     s"PRIORITY: ${ task.getPriority.opt.pretty }\n"
-  private def taskToJson(task: Task): JValue =
+  def taskToJson(task: Task): JValue =
     ("task" ->
       ("id" -> task.getID) ~
       ("name" -> task.getName) ~
       ("description" -> task.getDescription) ~
       ("priority" -> task.getPriority.opt.pretty)
     )
-  private def taskToXml(task: Task): Node =
+  def taskToXml(task: Task): Node =
     <task>
       <id>{ task.getID }</id>
       <name>{ task.getName }</name>

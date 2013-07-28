@@ -20,6 +20,18 @@ object TaskTools {
     }
   }
 
+  def create(task: Task): Either[String, Task] = {
+    try {
+      task.setUser(currentUser)
+      val newTaskFut = TaskRepo.create(task)
+      val newTask = Await.result(newTaskFut, reasonableTimeout)
+      Right(newTask)
+    } catch {
+      case e: Exception =>
+      Left("Something went wrong! Please try again.")
+    }
+  }
+
   def getForCurrentUser(): Either[String, IndexedSeq[Task]] = {
     try {
       val userTaskListFut = TaskRepo.findByUser(currentUser)
