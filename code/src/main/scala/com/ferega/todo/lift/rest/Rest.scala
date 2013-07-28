@@ -67,5 +67,16 @@ object Rest extends RestHelper {
         case (Left(message), _) => InternalServerErrorResponse()
         case (_, Left(message)) => InternalServerErrorResponse()
       }
+
+    case req @ Req("rest" :: "task" :: id :: Nil, "", DeleteRequest) =>
+      TaskTools.getForCurrentUser(id) match {
+        case Right(Some(task)) =>
+          TaskTools.delete(task) match {
+            case Right(task)   => NoContentResponse()
+            case Left(message) => InternalServerErrorResponse()
+          }
+        case Right(None)       => NotFoundResponse()
+        case Left(message)     => InternalServerErrorResponse()
+      }
   }
 }
