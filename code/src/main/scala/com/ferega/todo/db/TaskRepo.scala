@@ -26,6 +26,13 @@ object TaskRepo {
     }
   }
 
+  def find(id: String): Future[Option[Task]] =
+    findWrap(id).
+      map(Some(_)).
+      recover {
+        case NotFound() => None
+      }
+
   def delete(task: Task): Future[Task] =
     deleteWrap(task)
 

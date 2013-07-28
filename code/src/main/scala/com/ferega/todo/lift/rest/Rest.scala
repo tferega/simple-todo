@@ -30,10 +30,15 @@ object Rest extends RestHelper {
   serve {
     case Req("rest" :: "list" :: Nil, RespType(resp), GetRequest) =>
       TaskTools.getForCurrentUser match {
-        case Right(taskList) =>
-          resp.toResponse(taskList)
-        case Left(message) =>
-          InternalServerErrorResponse()
+        case Right(taskList) => resp.toResponse(taskList)
+        case Left(message)   => InternalServerErrorResponse()
+      }
+
+    case Req("rest" :: "task" :: id :: Nil, RespType(resp), GetRequest) =>
+      TaskTools.getForCurrentUser(id) match {
+        case Right(Some(task)) => resp.toResponse(task)
+        case Right(None)       => NotFoundResponse()
+        case Left(message)     => InternalServerErrorResponse()
       }
   }
 }
