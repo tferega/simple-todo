@@ -47,3 +47,5 @@ unmanagedSourceDirectories in Compile <<= (scalaSource in Compile) ( sS =>
 )
 
 unmanagedSourceDirectories in Test := Nil
+
+initialCommands in console := """import com.ferega.todo._"""
