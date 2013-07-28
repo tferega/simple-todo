@@ -4,7 +4,7 @@ package rest
 
 import net.liftweb.common.Full
 import net.liftweb.http.auth.{ AuthRole, HttpBasicAuthentication, userRoles }
-import net.liftweb.http.{ LiftRules, PlainTextResponse, Req }
+import net.liftweb.http._
 import net.liftweb.http.rest.RestHelper
 
 object Rest extends RestHelper {
@@ -28,8 +28,12 @@ object Rest extends RestHelper {
   }
 
   serve {
-    case Req("rest" :: _, _, _) =>
-      val user = Request.get
-      PlainTextResponse(s"Boo, ${ user.getUsername() }!")
+    case Req("rest" :: "list" :: Nil, RespType(resp), GetRequest) =>
+      TaskTools.getForCurrentUser match {
+        case Right(taskList) =>
+          resp.toResponse(taskList)
+        case Left(message) =>
+          InternalServerErrorResponse()
+      }
   }
 }
