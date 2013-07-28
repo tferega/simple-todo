@@ -21,7 +21,7 @@ object TaskTools {
 
   def getForCurrentUser(): Either[String, IndexedSeq[Task]] = {
     try {
-      val user = Session.get
+      val user = Session.opt orElse Request.opt getOrElse(throw new Exception("Neither session nor request are defined"))
       val userTaskListFut = TaskRepo.findByUser(user)
       val userTaskList = Await.result(userTaskListFut, reasonableTimeout)
       Right(userTaskList)

@@ -21,5 +21,6 @@ object Session {
   def isDefined = current.isDefined
   def isEmpty   = current.isEmpty
 
+  def opt = current.get
   def get = current.get.getOrElse(throw new Exception("Session not defined"))
 }
