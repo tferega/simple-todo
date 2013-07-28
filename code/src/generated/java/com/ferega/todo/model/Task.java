@@ -13,7 +13,6 @@ public class Task implements java.io.Serializable, AggregateRoot {
         this.userID = "";
         this.name = "";
         this.description = "";
-        this.priority = 0;
     }
 
     private transient final ServiceLocator _serviceLocator;
@@ -57,7 +56,7 @@ public class Task implements java.io.Serializable, AggregateRoot {
             final com.ferega.todo.model.User user,
             final String name,
             final String description,
-            final int priority) {
+            final Integer priority) {
         _serviceLocator = Bootstrap.getLocator();
         _domainProxy = _serviceLocator.resolve(DomainProxy.class);
         _crudProxy = _serviceLocator.resolve(CrudProxy.class);
@@ -75,7 +74,7 @@ public class Task implements java.io.Serializable, AggregateRoot {
             @JsonProperty("userURI") final String userURI,
             @JsonProperty("name") final String name,
             @JsonProperty("description") final String description,
-            @JsonProperty("priority") final int priority) {
+            @JsonProperty("priority") final Integer priority) {
         this._serviceLocator = _serviceLocator;
         this._domainProxy = _serviceLocator.resolve(DomainProxy.class);
         this._crudProxy = _serviceLocator.resolve(CrudProxy.class);
@@ -297,14 +296,14 @@ public class Task implements java.io.Serializable, AggregateRoot {
         return this;
     }
 
-    private int priority;
+    private Integer priority;
 
     @JsonProperty("priority")
-    public int getPriority() {
+    public Integer getPriority() {
         return priority;
     }
 
-    public Task setPriority(final int value) {
+    public Task setPriority(final Integer value) {
         this.priority = value;
 
         return this;

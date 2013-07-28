@@ -2,22 +2,29 @@ package com.ferega.todo
 package db
 
 import model.User
+import model.repositories.UserRepository
 
-import scala.collection.JavaConversions._
+import scala.concurrent.Future
 
 object UserRepo {
-  val repo = new model.repositories.UserRepository(locator)
+  val repo = new UserRepository(locator)
 
-  def create(username: String, passhash: String): User = {
-    val user = new model.User(username, passhash)
-    user.persist()
+  def create(username: String, salt: Array[Byte], passhash: Array[Byte]): Future[User] = {
+    val user = new User(username, salt, passhash)
+    val uriFut = insertWrap(user)
+    uriFut flatMap findWrap
   }
 
-  def auth(username: String, passhash: String): Option[User] = {
-    val spec = new model.User.auth(username, passhash)
-    spec.search.toList match {
-      case user :: Nil => Some(user)
-      case _ => None
-    }
-  }
+  def find(username: String): Future[Option[User]] =
+    findWrap(username).
+      map(Some(_)).
+      recover {
+        case NotFound() => None
+      }
+
+  private def findWrap(uri: String): Future[User] =
+    wrapJavaFuture { repo.find(uri) }
+
+  private def insertWrap(user: User): Future[String] =
+    wrapJavaFuture { repo.insert(user) }
 }

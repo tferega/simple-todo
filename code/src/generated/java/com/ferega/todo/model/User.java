@@ -10,7 +10,8 @@ public class User implements java.io.Serializable, AggregateRoot {
         _domainProxy = _serviceLocator.resolve(DomainProxy.class);
         _crudProxy = _serviceLocator.resolve(CrudProxy.class);
         this.username = "";
-        this.passhash = "";
+        this.salt = new byte[0];
+        this.passhash = new byte[0];
     }
 
     private transient final ServiceLocator _serviceLocator;
@@ -52,11 +53,13 @@ public class User implements java.io.Serializable, AggregateRoot {
 
     public User(
             final String username,
-            final String passhash) {
+            final byte[] salt,
+            final byte[] passhash) {
         _serviceLocator = Bootstrap.getLocator();
         _domainProxy = _serviceLocator.resolve(DomainProxy.class);
         _crudProxy = _serviceLocator.resolve(CrudProxy.class);
         setUsername(username);
+        setSalt(salt);
         setPasshash(passhash);
     }
 
@@ -64,13 +67,15 @@ public class User implements java.io.Serializable, AggregateRoot {
             @JacksonInject("_serviceLocator") final ServiceLocator _serviceLocator,
             @JsonProperty("URI") final String URI ,
             @JsonProperty("username") final String username,
-            @JsonProperty("passhash") final String passhash) {
+            @JsonProperty("salt") final byte[] salt,
+            @JsonProperty("passhash") final byte[] passhash) {
         this._serviceLocator = _serviceLocator;
         this._domainProxy = _serviceLocator.resolve(DomainProxy.class);
         this._crudProxy = _serviceLocator.resolve(CrudProxy.class);
         this.URI = URI;
         this.username = username == null ? "" : username;
-        this.passhash = passhash == null ? "" : passhash;
+        this.salt = salt == null ? new byte[0] : salt;
+        this.passhash = passhash == null ? new byte[0] : passhash;
     }
 
     public static User find(final String uri) throws java.io.IOException {
@@ -161,6 +166,7 @@ public class User implements java.io.Serializable, AggregateRoot {
         this.URI = result.URI;
 
         this.username = result.username;
+        this.salt = result.salt;
         this.passhash = result.passhash;
     }
     public User persist() throws java.io.IOException {
@@ -199,90 +205,31 @@ public class User implements java.io.Serializable, AggregateRoot {
         return this;
     }
 
-    private String passhash;
+    private byte[] salt;
+
+    @JsonProperty("salt")
+    public byte[] getSalt() {
+        return salt;
+    }
+
+    public User setSalt(final byte[] value) {
+        if(value == null) throw new IllegalArgumentException("Property \"salt\" cannot be null!");
+        this.salt = value;
+
+        return this;
+    }
+
+    private byte[] passhash;
 
     @JsonProperty("passhash")
-    public String getPasshash() {
+    public byte[] getPasshash() {
         return passhash;
     }
 
-    public User setPasshash(final String value) {
+    public User setPasshash(final byte[] value) {
         if(value == null) throw new IllegalArgumentException("Property \"passhash\" cannot be null!");
         this.passhash = value;
 
         return this;
     }
-
-public static class auth implements java.io.Serializable, Specification<User> {
-    public auth(
-             final String username,
-             final String passhash) {
-        setUsername(username);
-        setPasshash(passhash);
-    }
-
-    public auth() {
-        this.username = "";
-        this.passhash = "";
-    }
-
-    private static final long serialVersionUID = 0x0097000a;
-
-    private String username;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public auth setUsername(final String value) {
-        if(value == null) throw new IllegalArgumentException("Property \"username\" cannot be null!");
-        this.username = value;
-
-        return this;
-    }
-
-    private String passhash;
-
-    public String getPasshash() {
-        return passhash;
-    }
-
-    public auth setPasshash(final String value) {
-        if(value == null) throw new IllegalArgumentException("Property \"passhash\" cannot be null!");
-        this.passhash = value;
-
-        return this;
-    }
-
-        public java.util.List<User> search() throws java.io.IOException {
-            return search(null, null, Bootstrap.getLocator());
-        }
-        public java.util.List<User> search(final ServiceLocator locator) throws java.io.IOException {
-            return search(null, null, locator);
-        }
-        public java.util.List<User> search(final Integer limit, final Integer offset) throws java.io.IOException {
-            return search(limit, offset, Bootstrap.getLocator());
-        }
-        public java.util.List<User> search(final Integer limit, final Integer offset, final ServiceLocator locator) throws java.io.IOException {
-            try {
-                return (locator != null ? locator : Bootstrap.getLocator()).resolve(DomainProxy.class).search(this, limit, offset, null).get();
-            } catch (final InterruptedException e) {
-                throw new java.io.IOException(e);
-            } catch (final java.util.concurrent.ExecutionException e) {
-                throw new java.io.IOException(e);
-            }
-        }
-        public long count() throws java.io.IOException {
-            return count(Bootstrap.getLocator());
-        }
-        public long count(final ServiceLocator locator) throws java.io.IOException {
-            try {
-                return (locator != null ? locator : Bootstrap.getLocator()).resolve(DomainProxy.class).count(this).get().longValue();
-            } catch (final InterruptedException e) {
-                throw new java.io.IOException(e);
-            } catch (final java.util.concurrent.ExecutionException e) {
-                throw new java.io.IOException(e);
-            }
-        }
-}
 }

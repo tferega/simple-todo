@@ -11,7 +11,7 @@ package object todo {
 
   val locator = Bootstrap.init(config)
 
-  val dbTimeout = 5 seconds
+  val reasonableTimeout = 5 seconds
 
   implicit val ec = ExecutionContext.fromExecutor(java.util.concurrent.Executors.newCachedThreadPool())
 }
