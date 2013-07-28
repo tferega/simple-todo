@@ -1,7 +1,10 @@
 package com.ferega.todo
 package lift
 
+import rest.Rest
+
 import net.liftweb.common.{ Empty, Full }
+import net.liftweb.http.auth.HttpBasicAuthentication
 import net.liftweb.http.{ Bootable, Html5Properties, LiftRules }
 import net.liftweb.http.{ Req, S }
 import net.liftweb.sitemap.Loc.{ EarlyResponse, Hidden }
@@ -25,5 +28,9 @@ class Boot extends Bootable {
         Menu("Home") / "index" >> Hidden >> EarlyResponse(isLoggedIn),
         Menu("Auth") / "auth"  >> Hidden >> EarlyResponse(notLoggedIn)
     ))
+
+    LiftRules.httpAuthProtectedResource.append(Rest.protection)
+    LiftRules.authentication = Rest.authentication
+    LiftRules.statelessDispatch.append(Rest)
   }
 }
