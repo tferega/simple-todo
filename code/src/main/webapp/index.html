@@ -1,5 +1,5 @@
 <div data-lift="surround?with=default;at=content">
-  <div data-lift="TaskList">
+  <div data-lift="TaskForm?eager_eval=true">
     <div>Welcome, <span id="username"></span>!</div>
 
     <h2>Tasks</h2>
@@ -13,26 +13,19 @@
           <th>Actions</th>
         </tr>
       </thead>
-        <tbody id="task-body">
-          <tr id="task-list">
-            <td class="name"></td>
-            <td class="description"></td>
-            <td class="priority"></td>
-            <td>
-              <div class="delete">DELETE</div>
-            </td>
-          </tr>
+        <tbody id="task-list">
+          <tr data-lift="embed?what=task" />
         </tbody>
     </table>
   </div>
 
   <h2>Add an new task</h2>
   <form data-lift="form.ajax">
-    <div data-lift="AddTaskForm">
+    <div data-lift="TaskForm">
       <div id="add-result" style="display: none"></div>
-      Name: <input id="name"><br>
-      Description: <input id="description">
-      <input id="submit">
+      Name: <input id="add-name" /><br />
+      Description: <input id="add-description" />
+      <input id="add-submit" />
     </div>
   </form>
 
