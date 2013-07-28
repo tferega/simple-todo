@@ -40,6 +40,6 @@ object TaskRepo {
     wrapJavaFuture { repo.delete(task).asInstanceOf[JFuture[Task]] }
 
   private def taskSort(task: Task): (Int, Int) = {
-    (Option(task.getPriority).map(_.toInt).getOrElse(Int.MaxValue), task.getID())
+    (task.getPriority.opt.getOrElse(Int.MaxValue), task.getID())
   }
 }

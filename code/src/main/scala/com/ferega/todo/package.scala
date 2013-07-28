@@ -14,4 +14,12 @@ package object todo {
   val reasonableTimeout = 5 seconds
 
   implicit val ec = ExecutionContext.fromExecutor(java.util.concurrent.Executors.newCachedThreadPool())
+
+  implicit class ImpaleInteger(i: Integer) {
+    def opt = Option(i).map(_.toInt)
+  }
+
+  implicit class ImpaleOption[T](opt: Option[T]) {
+    def pretty = opt.map(_.toString).getOrElse("N/A")
+  }
 }

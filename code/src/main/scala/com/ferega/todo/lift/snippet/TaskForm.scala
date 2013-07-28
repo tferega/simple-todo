@@ -61,7 +61,7 @@ object TaskForm {
     ".task [id]" #> ("task-"+task.getID) &
     ".name *"         #> task.getName &
     ".description *"  #> task.getDescription &
-    ".priority *"     #> task.getPriority &
+    ".priority *"     #> task.getPriority.opt.pretty &
     ".delete *"       #> SHtml.ajaxButton("Delete", processDelete(task))
 
   private def renderTaskError(message: String) =
