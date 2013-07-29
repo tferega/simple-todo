@@ -41,7 +41,9 @@ object TaskForm {
       Templates("templates-hidden" :: "task" :: Nil) match {
         case Full(template) =>
           val out = renderTask(task)(template)
-          JqJsCmds.AppendHtml("task-list", out)
+          JqJsCmds.AppendHtml("task-list", out) &
+          JsCmds.SetValById("add-name", "") &
+          JsCmds.SetValById("add-description", "")
         case _ =>
           JsCmds.SetHtml("add-result", Text("Something went wrong! Please try again.")) & JqJsCmds.Show("add-result")
       }
