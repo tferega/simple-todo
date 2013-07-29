@@ -4,15 +4,13 @@ package lift
 import db.{ IsDuplicate, UserRepo }
 import model.User
 
-import scala.concurrent.Await
-
 object UserTools {
   def create(username: String, password: String): Either[String, User] = {
     try {
       val salt = Security.createSalt
       val passhash = Security.createHash(password, salt)
       val newUserFut = UserRepo.create(username, salt, passhash)
-      val newUser = Await.result(newUserFut, reasonableTimeout)
+      val newUser = newUserFut.get
       Right(newUser)
     } catch {
       case IsDuplicate() =>
@@ -25,7 +23,7 @@ object UserTools {
   def auth(username: String, password: String): Either[String, User] = {
     try {
       val foundUserOptFut = UserRepo.find(username)
-      val foundUserOpt = Await.result(foundUserOptFut, reasonableTimeout)
+      val foundUserOpt = foundUserOptFut.get
       foundUserOpt match {
         case Some(foundUser) =>
           Security.validate(password, foundUser.getSalt, foundUser.getPasshash) match {

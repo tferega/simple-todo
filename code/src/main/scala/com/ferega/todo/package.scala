@@ -2,6 +2,7 @@ package com.ferega
 
 import com.dslplatform.client.Bootstrap
 
+import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext
 
@@ -11,7 +12,7 @@ package object todo {
 
   val locator = Bootstrap.init(config)
 
-  val reasonableTimeout = 5 seconds
+  implicit val reasonableTimeout = 5 seconds
 
   implicit val ec = ExecutionContext.fromExecutor(java.util.concurrent.Executors.newCachedThreadPool())
 
@@ -21,6 +22,11 @@ package object todo {
 
   implicit class ImpaleOption[T](opt: Option[T]) {
     def pretty = opt.map(_.toString).getOrElse("N/A")
+  }
+
+  implicit class ImpaleFuture[T](fut: Future[T]) {
+    def get(implicit timeout: Duration): T =
+      Await.result(fut, timeout)
   }
 
   def tryO[T](f: => T): Option[T] =
