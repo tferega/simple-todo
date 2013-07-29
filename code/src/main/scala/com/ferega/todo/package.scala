@@ -23,7 +23,7 @@ package object todo {
     def pretty = opt.map(_.toString).getOrElse("N/A")
   }
 
-  def tryo[T](f: => T): Option[T] =
+  def tryO[T](f: => T): Option[T] =
     try {
       Some(f)
     } catch {

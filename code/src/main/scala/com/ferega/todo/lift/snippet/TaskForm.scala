@@ -49,8 +49,8 @@ object TaskForm {
       JsCmds.SetHtml("add-result", Text(message)) & JqJsCmds.Show("add-result")
   }
 
-  def processEditName(task: Task, newName: String): JsCmd = {
-    task.setName(newName)
+  def createEditProcessor(editFun: (Task, String) => Task)(task: Task, newValue: String): JsCmd = {
+    editFun(task, newValue)
     TaskTools.updateForCurrentUser(task) match {
       case Right(newTask) =>
         Templates("templates-hidden" :: "task" :: Nil) match {
@@ -65,11 +65,19 @@ object TaskForm {
     }
   }
 
-  def processClickName(task: Task): JsCmd = {
-    JqJsCmds.Show(idStr(task, "editname")) &
-    JqJsCmds.Hide(idStr(task, "showname")) &
-    JsCmds.SetValueAndFocus(idStr(task, "editname-inner"), task.getName)
+  def createClickProcessor(subsection: String, valueFun: (Task) => String)(task: Task): JsCmd = {
+    JqJsCmds.Show(idStr(task, s"edit$subsection")) &
+    JqJsCmds.Hide(idStr(task, s"show$subsection")) &
+    JsCmds.SetValueAndFocus(idStr(task, s"edit$subsection-inner"), valueFun(task))
   }
+
+  val processEditName        = createEditProcessor((task, newName)        => task.setName(newName)) _
+  val processEditDescription = createEditProcessor((task, newDescription) => task.setDescription(newDescription)) _
+  val processEditPriority    = createEditProcessor((task, newPriority)    => task.setPriority(tryO(newPriority.toInt: Integer).orNull)) _
+
+  val processClickName        = createClickProcessor("name", (task) => task.getName) _
+  val processClickDescription = createClickProcessor("desc", (task) => task.getDescription) _
+  val processClickPriority    = createClickProcessor("priority", (task) => task.getPriority().opt.pretty) _
 
   private def tryRenderTaskTable =
     TaskTools.getForCurrentUser match {
@@ -78,6 +86,12 @@ object TaskForm {
       case Left(message)   => renderTaskError(message)
     }
 
+  private def renderText(text: String) =
+    if (text.isEmpty)
+      <span class="empty">empty</span>
+    else
+      Text(text)
+
   private def renderEmptyTable =
     "#task-table" #> "You don't seem to have any tasks."
 
@@ -85,14 +99,20 @@ object TaskForm {
     ".task" #> taskList.map(renderTask)
 
   private def renderTask(task: Task) =
-    ".task [id]"          #> idStr(task) &
-    ".name .content [id]" #> idStr(task, "showname") &
-    ".name .content *"    #> SHtml.span(Text(task.getName), processClickName(task), SHtml.BasicElemAttr("id", idStr(task, "showname-inner"))) &
-    ".name .edit [id]"    #> idStr(task, "editname") &
-    ".name .edit *"       #> SHtml.ajaxText("", processEditName(task, _), SHtml.BasicElemAttr("id", idStr(task, "editname-inner"))) &
-    ".description *"      #> task.getDescription &
-    ".priority *"         #> task.getPriority.opt.pretty &
-    ".delete *"           #> SHtml.ajaxButton("Delete", processDelete(task))
+    ".task [id]"                 #> idStr(task) &
+    ".name .content [id]"        #> idStr(task, "showname") &
+    ".name .content *"           #> SHtml.span(renderText(task.getName), processClickName(task), SHtml.BasicElemAttr("id", idStr(task, "showname-inner"))) &
+    ".name .edit [id]"           #> idStr(task, "editname") &
+    ".name .edit *"              #> SHtml.ajaxText("", processEditName(task, _), SHtml.BasicElemAttr("id", idStr(task, "editname-inner"))) &
+    ".description .content [id]" #> idStr(task, "showdesc") &
+    ".description .content *"    #> SHtml.span(renderText(task.getDescription), processClickDescription(task), SHtml.BasicElemAttr("id", idStr(task, "showdesc-inner"))) &
+    ".description .edit [id]"    #> idStr(task, "editdesc") &
+    ".description .edit *"       #> SHtml.ajaxText("", processEditDescription(task, _), SHtml.BasicElemAttr("id", idStr(task, "editdesc-inner"))) &
+    ".priority .content [id]"    #> idStr(task, "showpriority") &
+    ".priority .content *"       #> SHtml.span(renderText(task.getPriority.opt.pretty), processClickPriority(task), SHtml.BasicElemAttr("id", idStr(task, "showpriority-inner"))) &
+    ".priority .edit [id]"       #> idStr(task, "editpriority") &
+    ".priority .edit *"          #> SHtml.ajaxText("", processEditPriority(task, _), SHtml.BasicElemAttr("id", idStr(task, "editpriority-inner"))) &
+    ".delete *"                  #> SHtml.ajaxButton("Delete", processDelete(task))
 
   private def renderTaskError(message: String) =
     "#task-table" #> message

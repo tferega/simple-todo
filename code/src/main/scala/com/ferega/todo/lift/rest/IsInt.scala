@@ -4,7 +4,7 @@ package rest
 
 object IsInt {
   def unapply(str: String): Option[Int] =
-    tryo {
+    tryO {
       str.toInt
     }
 }
