@@ -24,10 +24,7 @@ object TaskRepo {
 
   def findByUser(user: User): Future[IndexedSeq[Task]] = {
     val spec = new Task.findByUser(user.getUsername)
-    Future {
-      val taskList = spec.search.toIndexedSeq
-      taskList sortBy taskSort
-    }
+    wrapJavaFuture { repo.builder.ascending("priority").ascending("ID").`with`(spec).search }.map(_.toIndexedSeq)
   }
 
   def find(id: String): Future[Option[Task]] =
@@ -55,8 +52,4 @@ object TaskRepo {
 
   private def deleteWrap(task: Task): Future[Task] =
     wrapJavaFuture { repo.delete(task).asInstanceOf[JFuture[Task]] }
-
-  private def taskSort(task: Task): (Int, Int) = {
-    (task.getPriority.opt.getOrElse(Int.MaxValue), task.getID())
-  }
 }
