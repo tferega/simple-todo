@@ -19,7 +19,9 @@ object LoginForm {
         Session.create(user)
         JsCmds.RedirectTo("/")
       case Left(message) =>
-        JsCmds.SetHtml("login-result", Text(message)) & JqJsCmds.Show("login-result")
+        JsCmds.SetHtml("login-result", Text(message)) & JqJsCmds.Show("login-result") &
+        JsCmds.SetValById("register-name", "") &
+        JsCmds.SetValById("login-pass", "")
     }
 
   def render =
