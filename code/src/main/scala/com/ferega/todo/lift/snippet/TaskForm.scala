@@ -10,6 +10,7 @@ import net.liftweb.http.SHtml
 import net.liftweb.http.Templates
 import net.liftweb.util.Helpers._
 import scala.xml.{ NodeSeq, Text }
+import net.liftweb.http.js.JE.JsRaw
 
 object TaskForm {
   private var name = ""
@@ -29,7 +30,8 @@ object TaskForm {
   def processDelete(task: Task): () => JsCmd = () => {
     TaskTools.delete(task) match {
       case Right(_) =>
-        JsCmds.Replace(idStr(task), NodeSeq.Empty)
+        JsCmds.Replace(idStr(task), NodeSeq.Empty) &
+        JsRaw("if ($('#task-list').children().size() == 0) { $('#task-table').hide(); $('#notask').show() }").cmd
       case Left(message) =>
         JsCmds.SetHtml("action-result", Text(message)) & JqJsCmds.Show("action-result")
     }
@@ -42,6 +44,7 @@ object TaskForm {
         case Full(template) =>
           val out = renderTask(task)(template)
           JqJsCmds.AppendHtml("task-list", out) &
+          JsRaw("if ($('#task-list').children().size() == 1) { $('#task-table').show(); $('#notask').hide(); }").cmd &
           JsCmds.SetValById("add-name", "") &
           JsCmds.SetValById("add-description", "")
         case _ =>
@@ -95,7 +98,8 @@ object TaskForm {
       Text(text)
 
   private def renderEmptyTable =
-    "#task-table" #> "You don't seem to have any tasks."
+    "#task-table [style]" #> Text("display: none") &
+    "#notask [style]" #> ""
 
   private def renderTaskList(taskList: IndexedSeq[Task]) =
     ".task" #> taskList.map(renderTask)

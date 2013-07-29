@@ -4,19 +4,10 @@
 
     <h2>Tasks</h2>
     <div id="action-result" style="display: none"></div>
-    <table id="task-table" border="1">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Description</th>
-          <th>Priority</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-        <tbody id="task-list">
-          <tr data-lift="embed?what=task" />
-        </tbody>
-    </table>
+    <div id="task-container">
+      <span id="notask" style="display: none">You don't seem to have any tasks!</span>
+      <tr data-lift="embed?what=task-table" />
+    </div>
   </div>
 
   <h2>Add an new task</h2>
