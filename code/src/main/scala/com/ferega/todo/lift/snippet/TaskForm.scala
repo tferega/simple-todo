@@ -61,7 +61,8 @@ object TaskForm {
         Templates("templates-hidden" :: "task" :: Nil) match {
           case Full(template) =>
             val out = renderTask(task)(template)
-            JsCmds.Replace(idStr(task), out)
+            JsCmds.Replace(idStr(task), out) &
+            JsRaw("$(function() { $('input').focus(function() { $(this).select(); }) })").cmd
           case _ =>
             JsCmds.SetHtml("add-result", Text("Something went wrong! Please try again.")) & JqJsCmds.Show("add-result")
         }
